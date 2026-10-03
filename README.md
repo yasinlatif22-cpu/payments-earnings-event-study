@@ -1,3 +1,4 @@
+## Pre-registered hypothesis (written before running the test)
 # Price & Risk Analyzer
 
 Compares the risk profile of Visa (V) and Mastercard (MA) over the trailing year using Python.
@@ -42,3 +43,7 @@ Market-model abnormal returns (beta vs. SPY estimated on the 250 trading days en
 - Earnings reactions are large relative to normal days: mean absolute abnormal return on the reaction day was 2.56% (V) and 2.00% (MA) vs 0.78% and 0.87% on other days (Welch t-test on absolute values, p = 0.001 and p < 0.001).
 - The EPS surprise explains little of the reaction: R2 = 0.03 (pooled, n = 50, p = 0.23). Both stocks beat consensus in 24 of 25 quarters, so the surprise has almost no variation, and the sample is too small to rule out a modest effect.
 - Earnings windows are 4.8% of trading days but 19% of the gap's squared daily moves.
+
+## Pre-registered hypothesis (written before running the test)
+H3: the earnings reaction (CAR[0,+1]) is negatively related to the stock's market-adjusted return over the 60 trading days before the announcement. Primary test: pooled regression across both stocks, predicted slope < 0. The per-stock regressions are secondary.
+

@@ -22,7 +22,7 @@ Return correlation: 0.86.
 ![Risk chart](risk_chart.png)
 
 ## Observations
-Despite a 0.86 return correlation, V and MA finished the year about 8 percentage points apart (V +3.92%, MA -4.26%), and their worst drawdowns came at different times. V rallied sharply around May 2026 while MA kept sliding for another month. A next step is to check what drove V's move (earnings, guidance, or news) and why MA didn't follow.
+Almost all of the roughly 8-point gap between V and MA came from two days. Visa reported fiscal Q2 after the close on 2026-04-28 and rose 8.26% the next day (MA +3.47%). On 2026-04-30, MA's own earnings day, MA fell 4.25% and V fell 1.50%. V's cumulative outperformance was under 3 points through March, reached 8.76 by the end of April, and stayed between about 6 and 11 afterward. Visa beat consensus adjusted EPS ($3.31 vs. $3.10), grew revenue 17%, raised full-year guidance, and announced a $20B buyback. I have not yet determined why MA fell on its own earnings day.
 
 ## Limitations
 - One year of data is a small sample.

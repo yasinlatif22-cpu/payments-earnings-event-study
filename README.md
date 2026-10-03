@@ -17,7 +17,7 @@ Python analysis of Visa (V) and Mastercard (MA) against the S&P 500 (SPY): a ris
 
 Sharpe = (average daily return x 252 - risk-free rate) / annualised volatility, with the risk-free rate set to the average 3-month T-bill yield (^IRX) over the sample (printed by the script). Downside deviation counts only days below 0. Drawdown counts the starting $1 as the first peak.
 
-V and MA move together (daily return correlation 0.86) but both had low correlation with SPY this year (0.17) and low beta (about 0.29). That is far below their long-run behaviour and reflects this one-year window, not a property of the stocks.
+V and MA move together (daily return correlation 0.86). Their link to the market has weakened steadily: beta vs SPY was about 1.1 for V and 1.3 for MA in 2019-2021, 0.6-0.9 for both in 2023-2025, and about 0.25 in 2026 to date (weekly-return beta over the last three years: V 0.72, MA 0.78; last 60 trading days, daily: V 0.03, MA 0.07). The one-year beta of 0.29 is therefore real but recent, and "return vs SPY" (a beta-of-1 comparison) overstates how much they underperformed what their market exposure implies. I have not tested why the link weakened.
 
 ![Risk chart](risk_chart.png)
 
@@ -48,7 +48,9 @@ H3: the earnings reaction (CAR[0,+1]) is negatively related to the stock's marke
 
 V and MA were analysed first. I then added four peers (AXP, PYPL, FIS, GPN) as a replication on new data. Primary tests: H2 (reaction rises with EPS surprise, slope > 0) and H3 (slope < 0), on the peers-only sample. EPS surprise is winsorised at +/-50 percentage points and Spearman rank correlation is the robustness check. I will not change windows or the model after seeing results. Events in the same quarter share market conditions, so p-values on pooled samples are optimistic.
 
-## Limitations
+## Data checks (Phase 0 diagnostics)
+- Prices: 1,845 trading days (2019-06-03 to 2026-10-02), no duplicate dates, longest gap 4 days (Labor Day weekend). The largest daily moves fall on known events (March 2020; SPY +10.5% on 2025-04-09).
+- Earnings timing: Visa reports after the close. Yahoo stamps 16:00 for 47 of 49 Visa events, and day +1 has the larger market-adjusted move in 40 of 49. Two events are stamped 06:00, probably wrongly. Visa's 2026 release dates (Jan 29, Apr 28, Jul 28) were confirmed against its filings and press releases. Mastercard releases before the open (its July 30 call was at 9:00 a.m. ET), but Yahoo's timestamps (mostly 08:00) are approximate, and day 0 had the larger move in only 19 of 49 events. The primary [0, +1] window is robust to this; single-day results for MA should be read cautiously.## Limitations
 - One year of data for the risk figures; 25 events per stock for the event study.
 - Yahoo Finance data is not institutional quality. Consensus EPS is a rough proxy, and AXP's mean surprise of 36% reflects outliers (surprise is winsorised for the regressions). No revenue or guidance data, which likely drive reactions; that is untested.
 - Beta and correlation with SPY are unusually low for V and MA this year and should not be read as long-run properties.

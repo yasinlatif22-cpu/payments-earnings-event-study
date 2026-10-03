@@ -50,7 +50,9 @@ V and MA were analysed first. I then added four peers (AXP, PYPL, FIS, GPN) as a
 
 ## Data checks (Phase 0 diagnostics)
 - Prices: 1,845 trading days (2019-06-03 to 2026-10-02), no duplicate dates, longest gap 4 days (Labor Day weekend). The largest daily moves fall on known events (March 2020; SPY +10.5% on 2025-04-09).
-- Earnings timing: Visa reports after the close. Yahoo stamps 16:00 for 47 of 49 Visa events, and day +1 has the larger market-adjusted move in 40 of 49. Two events are stamped 06:00, probably wrongly. Visa's 2026 release dates (Jan 29, Apr 28, Jul 28) were confirmed against its filings and press releases. Mastercard releases before the open (its July 30 call was at 9:00 a.m. ET), but Yahoo's timestamps (mostly 08:00) are approximate, and day 0 had the larger move in only 19 of 49 events. The primary [0, +1] window is robust to this; single-day results for MA should be read cautiously.## Limitations
+- Earnings timing: Visa reports after the close. Yahoo stamps 16:00 for 47 of 49 Visa events, and day +1 has the larger market-adjusted move in 40 of 49. Two events are stamped 06:00, probably wrongly. Visa's 2026 release dates (Jan 29, Apr 28, Jul 28) were confirmed against its filings and press releases. Mastercard releases before the open (its July 30 call was at 9:00 a.m. ET), but Yahoo's timestamps (mostly 08:00) are approximate, and day 0 had the larger move in only 19 of 49 events. The primary [0, +1] window is robust to this; single-day results for MA should be read cautiously.
+
+## Limitations
 - One year of data for the risk figures; 25 events per stock for the event study.
 - Yahoo Finance data is not institutional quality. Consensus EPS is a rough proxy, and AXP's mean surprise of 36% reflects outliers (surprise is winsorised for the regressions). No revenue or guidance data, which likely drive reactions; that is untested.
 - Beta and correlation with SPY are unusually low for V and MA this year and should not be read as long-run properties.

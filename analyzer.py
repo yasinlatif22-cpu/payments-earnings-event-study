@@ -50,3 +50,6 @@ axes[1].set_ylabel("%")
 plt.tight_layout()
 plt.savefig("risk_chart.png", dpi=150)
 print("\nSaved risk_chart.png")
+
+print("\nTotal return over period")
+print((cumulative.iloc[-1] - 1).map("{:.2%}".format))

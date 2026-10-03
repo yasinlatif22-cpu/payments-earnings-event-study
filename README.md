@@ -22,7 +22,7 @@ Return correlation: 0.86.
 ![Risk chart](risk_chart.png)
 
 ## Observations
-Despite a 0.86 return correlation, V and MA finished the year about 8 percentage points apart (V up roughly 4%, MA down roughly 4%), and their worst drawdowns came at different times. V rallied sharply around May 2026 while MA kept sliding for another month. A next step is to check what drove V's move (earnings, guidance, or news) and why MA didn't follow.
+Despite a 0.86 return correlation, V and MA finished the year about 8 percentage points apart (V +3.92%, MA -4.26%), and their worst drawdowns came at different times. V rallied sharply around May 2026 while MA kept sliding for another month. A next step is to check what drove V's move (earnings, guidance, or news) and why MA didn't follow.
 
 ## Limitations
 - One year of data is a small sample.

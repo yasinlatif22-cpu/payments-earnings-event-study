@@ -83,6 +83,8 @@ def event_row(ticker, ev, ret):
         row[f"t_{name}"] = ar.sum() / (sigma * np.sqrt(len(ar)))
     s, m = stock.iloc[i0: i0 + 2], mkt.iloc[i0: i0 + 2]
     row["car_0_1"] = (s - (alpha + beta * m)).sum()   # timing-robust primary window
+    s, m = stock.iloc[i0 - 60: i0], mkt.iloc[i0 - 60: i0]
+    row["pre60"] = (1 + s).prod() - (1 + m).prod()    # market-adjusted run-up, 60 days before
     return row
 
 
@@ -139,7 +141,12 @@ def main():
         print(f"{label}: n={len(d)}, slope={res.slope:.4f}, "
               f"R2={res.rvalue ** 2:.3f}, p={res.pvalue:.3f}")
 
-    # 4. Where does the V-vs-MA gap come from?
+    # H3. Does the run-up going into earnings predict the reaction?
+    print("\nH3: CAR[0,+1] regressed on 60-day market-adjusted run-up (predicted slope < 0)")
+    for label, d in groups:
+        res = stats.linregress(d["pre60"], d["car_0_1"])
+        print(f"{label}: n={len(d)}, slope={res.slope:.4f}, "
+              f"R2={res.rvalue ** 2:.3f}, p={res.pvalue:.3f}")    # 4. Where does the V-vs-MA gap come from?
     mask = pd.Series(False, index=ret.index)
     for r in events.itertuples():
         i = ret.index.searchsorted(r.announce_date)

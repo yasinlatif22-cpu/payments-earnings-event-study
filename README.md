@@ -47,3 +47,6 @@ Market-model abnormal returns (beta vs. SPY estimated on the 250 trading days en
 ## Pre-registered hypothesis (written before running the test)
 H3: the earnings reaction (CAR[0,+1]) is negatively related to the stock's market-adjusted return over the 60 trading days before the announcement. Primary test: pooled regression across both stocks, predicted slope < 0. The per-stock regressions are secondary.
 
+**H3 result (run after the hypothesis above was committed): not supported.** Pooled slope = +0.067 (R2 = 0.02, p = 0.35, n = 50), the opposite sign from the prediction and statistically indistinguishable from zero. Per-stock slopes: V +0.17 (p = 0.13), MA -0.01 (p = 0.90). With 50 events this test cannot rule out a modest effect, but it gives no evidence that a weak run-up leads to a bigger positive reaction.
+
+Taken together: earnings days move these stocks far more than normal days (H1), but neither the EPS surprise (H2) nor the prior run-up (H3) predicts the direction of the move in this sample. Guidance and current-quarter trends may matter more, but this data does not measure them and I have not tested that.

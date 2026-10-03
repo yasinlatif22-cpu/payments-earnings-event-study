@@ -50,9 +50,32 @@ V and MA were analysed first. I then added four peers (AXP, PYPL, FIS, GPN) as a
 
 ## Data checks (Phase 0 diagnostics)
 - Prices: 1,845 trading days (2019-06-03 to 2026-10-02), no duplicate dates, longest gap 4 days (Labor Day weekend). The largest daily moves fall on known events (March 2020; SPY +10.5% on 2025-04-09).
-- Earnings timing: Visa reports after the close. Yahoo stamps 16:00 for 47 of 49 Visa events, and day +1 has the larger market-adjusted move in 40 of 49. Two events are stamped 06:00, probably wrongly. Visa's 2026 release dates (Jan 29, Apr 28, Jul 28) were confirmed against its filings and press releases. Mastercard releases before the open (its July 30 call was at 9:00 a.m. ET), but Yahoo's timestamps (mostly 08:00) are approximate, and day 0 had the larger move in only 19 of 49 events. The primary [0, +1] window is robust to this; single-day results for MA should be read cautiously.
+- Earnings timing: Visa reports after the close. Yahoo stamps 16:00 for 47 of 49 Visa events, and day +1 has the larger market-adjusted move in 40 of 49. Two events are stamped 06:00, probably wrongly. Visa's 2026 release dates (Jan 29, Apr 28, Jul 28) were confirmed against its filings and press releases. Mastercard releases before the open (its July 30 call was at 9:00 a.m. ET), but Yahoo's timestamps (mostly 08:00) are approximate, and day 0 had the larger move in only 19 of 49 events. The primary [0, +1] window is robust to this; the event-time profile below shows MA peaking on day 0, as expected for a before-open release, so the day-count is a noisy measure.
 
-## Limitations
+## Event-time profile: timing and spillovers
+Mean absolute abnormal return in %, by trading day relative to the announcement date (day 0). Day 0 is the announcement date itself, so the profile does not depend on the before-open / after-close assumption (`run_analysis.py`).
+
+| Day | V | MA | AXP | PYPL | FIS | GPN |
+|---|---|---|---|---|---|---|
+| -3 | 0.76 | 0.74 | 1.09 | 1.15 | 1.29 | 1.37 |
+| -2 | 0.58 | 0.71 | 0.68 | 0.87 | 1.01 | 1.13 |
+| -1 | 0.59 | 1.56 | 0.99 | 1.37 | 1.27 | 1.10 |
+| 0 | 0.76 | 2.03 | 3.80 | 3.89 | 5.10 | 5.53 |
+| 1 | 2.54 | 1.07 | 1.36 | 5.61 | 2.06 | 1.83 |
+| 2 | 1.31 | 0.99 | 1.04 | 1.83 | 1.44 | 1.34 |
+| 3 | 0.83 | 1.07 | 0.85 | 2.02 | 1.32 | 1.59 |
+| 4 | 0.65 | 0.80 | 0.89 | 1.30 | 1.03 | 1.25 |
+| 5 | 1.04 | 0.92 | 1.04 | 1.55 | 1.13 | 1.61 |
+
+![Event-time profile](outputs/event_time_profile.png)
+
+- Peak day: V on day +1 (reports after the close); MA, AXP, FIS and GPN on day 0 (before the open). PYPL peaks on day +1 but also has a large day 0, so its Yahoo timestamps look mixed. This supports the timing used in the event study.
+- Possible spillover (a hypothesis, not tested): MA's day -1 (1.56 vs about 0.7 on days -3 and -2) and V's day +2 (1.31 vs 0.58-0.83 on other non-reaction days) are elevated. In April and July 2026 Visa reported on a Tuesday after the close and Mastercard on the Thursday before the open, so MA's day -1 was Visa's reaction day and V's day +2 was Mastercard's announcement day. For example MA rose 3.47% on 2026-04-29 and V fell 1.50% on 2026-04-30. This looks like earnings news transferring between the two companies. If true, V and MA events are not independent, so the pooled p-values above are optimistic.
+
+## Beta over time
+Rolling 126-day beta of V and MA vs SPY, 2019-2026 (`outputs/rolling_beta.png`).
+
+![Rolling beta](outputs/rolling_beta.png)## Limitations
 - One year of data for the risk figures; 25 events per stock for the event study.
 - Yahoo Finance data is not institutional quality. Consensus EPS is a rough proxy, and AXP's mean surprise of 36% reflects outliers (surprise is winsorised for the regressions). No revenue or guidance data, which likely drive reactions; that is untested.
 - Beta and correlation with SPY are unusually low for V and MA this year and should not be read as long-run properties.

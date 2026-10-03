@@ -75,7 +75,9 @@ Mean absolute abnormal return in %, by trading day relative to the announcement 
 ## Beta over time
 Rolling 126-day beta of V and MA vs SPY, 2019-2026 (`outputs/rolling_beta.png`).
 
-![Rolling beta](outputs/rolling_beta.png)## Limitations
+![Rolling beta](outputs/rolling_beta.png)
+
+## Limitations
 - One year of data for the risk figures; 25 events per stock for the event study.
 - Yahoo Finance data is not institutional quality. Consensus EPS is a rough proxy, and AXP's mean surprise of 36% reflects outliers (surprise is winsorised for the regressions). No revenue or guidance data, which likely drive reactions; that is untested.
 - Beta and correlation with SPY are unusually low for V and MA this year and should not be read as long-run properties.

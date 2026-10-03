@@ -104,6 +104,12 @@ def run_events():
           "(descriptive, picked after the fact; not a test)")
     print((es.largest_gap_days(ret.iloc[-cfg.TRADING_DAYS:], a, b) * 100).round(2).to_string())
 
+    print("\nEvent-time profile: mean |abnormal return| in %, by trading day relative to the announcement date")
+    prof = es.event_time_profile(ret, earnings, tickers, bench) * 100
+    prof.index.name = "day"
+    print(prof.round(2).to_string())
+    print("   peak day: " + ", ".join(f"{t} {prof[t].idxmax():+d}" for t in tickers))
+
     print("\nLatest reaction vs each stock's own history of |CAR[0,+1]|")
     lv = es.latest_vs_history(events, tickers)
     print(lv.round({c: 4 for c in lv.select_dtypes("number")}).to_string())
@@ -123,6 +129,14 @@ def run_events():
     ax[1].set(title="Mean absolute reaction by stock", ylabel="mean |CAR 0 to +1| (%)")
     plt.tight_layout()
     plt.savefig(OUT / "event_study.png", dpi=150)
+
+    fig, ax = plt.subplots(figsize=(10, 4.5))
+    prof.plot(ax=ax, marker="o")
+    ax.set(title="Mean absolute abnormal return around the announcement date",
+           xlabel="trading day relative to announcement (0 = announcement date)",
+           ylabel="mean |abnormal return| (%)")
+    plt.tight_layout()
+    plt.savefig(OUT / "event_time_profile.png", dpi=150)
 
     fig, ax = plt.subplots(figsize=(10, 4.5))
     for t in core:

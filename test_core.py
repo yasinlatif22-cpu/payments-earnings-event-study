@@ -137,3 +137,13 @@ def test_largest_gap_days():
     top = es.largest_gap_days(ret, "A", "B", n=2)
     assert list(top.index) == [idx[1], idx[3]]           # gaps of 0.05 and -0.03
     assert top["gap"].tolist() == pytest.approx([0.05, -0.03])
+
+
+def test_event_time_profile_peaks_on_the_jump_day():
+    ret = make_returns(jump_day=351, jump=0.05)          # jump the day after the announcement
+    earnings = {"AAA": pd.DataFrame({"announce_date": [ret.index[350]], "hour": [16],
+                                     "surprise_pct": [1.0]})}
+    prof = es.event_time_profile(ret, earnings, ["AAA"], "SPY")
+    assert prof["AAA"].idxmax() == 1
+    assert prof.loc[1, "AAA"] == pytest.approx(0.05, abs=1e-9)
+    assert prof.loc[0, "AAA"] == pytest.approx(0.0, abs=1e-9)

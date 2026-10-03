@@ -164,3 +164,26 @@ def largest_gap_days(ret, a, b, n=5):
     gap = (ret[a] - ret[b]).rename("gap")
     top = gap.abs().sort_values(ascending=False).head(n).index
     return ret.loc[top, [a, b]].join(gap)
+
+
+def event_time_profile(ret, earnings, tickers, benchmark, days=range(-3, 6)):
+    """Mean |abnormal return| for each trading day relative to the announcement date.
+
+    Day 0 is the announcement date itself, not the assumed reaction day, so the
+    profile does not depend on the before-open / after-close assumption: stocks that
+    report after the close should peak on day +1, those that report before the open on day 0.
+    """
+    out = {}
+    for t in tickers:
+        stock, mkt = ret[t], ret[benchmark]
+        rows = []
+        for ev in earnings[t].itertuples():
+            i0 = ret.index.searchsorted(ev.announce_date)
+            model = fit_market_model(stock, mkt, i0)
+            if model is None or i0 + max(days) >= len(ret):
+                continue
+            alpha, beta, _ = model
+            rows.append({k: abs(stock.iloc[i0 + k] - (alpha + beta * mkt.iloc[i0 + k]))
+                         for k in days})
+        out[t] = pd.DataFrame(rows).mean()
+    return pd.DataFrame(out)

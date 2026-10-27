@@ -1,5 +1,7 @@
 # V vs MA: Risk Profile and Earnings Reactions
 
+**Status:** Complete. Findings are sample-specific (one year of data for the risk figures, 25 earnings releases per stock). Methods and limitations are documented below.
+
 Python analysis of Visa (V) and Mastercard (MA) against the S&P 500 (SPY): a risk profile over a fixed one-year window, and an event study of earnings reactions across V, MA and four payments peers (AXP, PYPL, FIS, GPN).
 
 ## Findings

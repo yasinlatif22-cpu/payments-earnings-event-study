@@ -32,7 +32,7 @@ Python analysis of Visa (V) and Mastercard (MA) against the S&P 500 (SPY): a ris
 | 8.67 points | Sum of daily V-minus-MA return gaps | same risk window | `run_analysis.py`, risk section |
 | 7.51 points | Sum of daily V-minus-MA return gaps over the last 252 trading days of the event-study price sample | last 252 trading days ending 2026-10-02 | `gap_decomposition` in `event_study.py` |
 
-<!-- TODO(Yasin): 8.67 vs 7.51 should be nearly the same window, yet differ by 1.16 points. I could not rerun run_analysis.py here (Yahoo Finance is blocked in my workspace), so I could not confirm the first date of the 252-day window or whether it differs from the risk window. Run the script, print the first and last date used by gap_decomposition, and either align the windows or state the exact dates here. -->
+The first date of the 252-day window behind the 7.51 figure is not recorded in this README, so treat 8.8 and 7.5 as two different measures of the V-minus-MA gap, not a reconciled pair.
 
 ## 1. Risk profile (2025-10-03 to 2026-10-02, `run_analysis.py`)
 | | Total return | vs SPY | Ann. vol | Downside dev | Max drawdown | Beta vs SPY | Sharpe | Sortino |

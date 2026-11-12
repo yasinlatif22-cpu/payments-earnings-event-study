@@ -1,14 +1,38 @@
-# V vs MA: Risk Profile and Earnings Reactions
+# Payments Earnings Event Study: Visa, Mastercard and Peers
+
+**Question.** How much do earnings releases move payments stocks, and can the size or direction of the reaction be predicted?
+
+**Main finding.** Across **150 earnings releases from six companies** (V, MA, AXP, PYPL, FIS, GPN; 25 each), earnings days move
+these stocks roughly 2 to 6 times more than normal days (p <= 0.002 for each stock). The study did not establish that EPS
+surprises or the prior 60-day run-up predicted the direction of the reaction.
+
+![Grouped bar chart of mean absolute abnormal return on earnings reaction days versus all other days for V, MA, AXP, PYPL, FIS and GPN; earnings days are 2 to 6 times larger for every stock.](outputs/earnings_vs_other_days.png)
+*Mean absolute abnormal return (market model vs SPY), earnings reaction day against all other days, per stock. Values are from
+the table in section 2. The "other days" figures are produced by `run_analysis.py`.*
+
+**Full write-up:** the sections below cover the [risk profile](#1-risk-profile-2025-10-03-to-2026-10-02-run_analysispy),
+the [event study and hypothesis tests](#2-earnings-event-study-event_studypy), and [limitations](#limitations).
+Run it yourself with `python run_analysis.py` (see [how to run](#project-structure-and-how-to-run)).
 
 **Status:** Complete. Findings are sample-specific (one year of data for the risk figures, 25 earnings releases per stock). Methods and limitations are documented below.
 
 Python analysis of Visa (V) and Mastercard (MA) against the S&P 500 (SPY): a risk profile over a fixed one-year window, and an event study of earnings reactions across V, MA and four payments peers (AXP, PYPL, FIS, GPN).
 
 ## Findings
-- V's 8.8-point lead over MA over the year is ordinary for the pair: about 0.6 to 0.7 standard deviations of their annualised tracking error (11.7%), depending on the exact one-year window.
 - Earnings days move these stocks roughly 2 to 6 times more than normal days, in all six stocks (p <= 0.002 each).
 - Neither the EPS surprise nor the prior 60-day run-up predicts the direction of the earnings reaction in this sample (hypotheses written down before running, results reported as found).
+- V's 8.8-point lead over MA over the year is ordinary for the pair: about 0.6 to 0.7 standard deviations of their annualised tracking error (11.7%), depending on the exact one-year window.
 - V and MA earnings windows explain only +1.9 points of the +7.5-point one-year gap; the rest accrued on other days.
+
+**Why the gap is quoted as both 8.8 and 7.5 points.** They are two different measures of the V-minus-MA gap:
+
+| Figure | What it is | Window | Where it comes from |
+|---|---|---|---|
+| 8.8 points | Compounded total return, V +5.09% minus MA -3.75% | 2025-10-03 to 2026-10-02 (the risk window) | `outputs/risk_summary.csv` |
+| 8.67 points | Sum of daily V-minus-MA return gaps | same risk window | `run_analysis.py`, risk section |
+| 7.51 points | Sum of daily V-minus-MA return gaps over the last 252 trading days of the event-study price sample | last 252 trading days ending 2026-10-02 | `gap_decomposition` in `event_study.py` |
+
+<!-- TODO(Yasin): 8.67 vs 7.51 should be nearly the same window, yet differ by 1.16 points. I could not rerun run_analysis.py here (Yahoo Finance is blocked in my workspace), so I could not confirm the first date of the 252-day window or whether it differs from the risk window. Run the script, print the first and last date used by gap_decomposition, and either align the windows or state the exact dates here. -->
 
 ## 1. Risk profile (2025-10-03 to 2026-10-02, `run_analysis.py`)
 | | Total return | vs SPY | Ann. vol | Downside dev | Max drawdown | Beta vs SPY | Sharpe | Sortino |

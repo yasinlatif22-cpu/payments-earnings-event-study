@@ -90,8 +90,10 @@ def run_events():
 
     for title, xcol in [("H2: CAR[0,+1] on EPS surprise (predicted slope > 0)", "surprise_w"),
                         ("H3: CAR[0,+1] on 60-day market-adjusted run-up (predicted slope < 0)", "pre60")]:
-        print(f"\n{title}")
-        print(es.regress_car(events, xcol, tickers, core).round(3).to_string())
+        print(f"\n{title} (SE: cluster by reaction_date where >1 event shares a date, else HC3)")
+        rc = es.regress_car(events, xcol, tickers, core)
+        print(rc.round({"slope": 4, "R2": 3, "se": 4, "p": 3,
+                        "spearman rho": 3, "rho p": 3}).to_string())
 
     gd = es.gap_decomposition(ret, events, a, b)
     print(f"\nWhere does the {a}-vs-{b} gap come from?")

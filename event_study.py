@@ -5,6 +5,7 @@ winsorising) are fixed in config.py before looking at results.
 """
 import numpy as np
 import pandas as pd
+import statsmodels.api as sm
 from scipy import stats
 
 import config as cfg
@@ -93,7 +94,14 @@ def reaction_summary(events, tickers):
 
 
 def earnings_day_test(ret, events, tickers, benchmark):
-    """Are absolute abnormal returns larger on reaction days than on other days? (Welch t-test)"""
+    """Are absolute abnormal returns larger on reaction days than on other days? (Welch t-test)
+
+    Run separately per ticker (this stock's reaction days vs this stock's own
+    other days), never pooling tickers together. Same-day correlation across
+    V/MA/AXP/PYPL/FIS/GPN (the reason `regress_car` below clusters by
+    reaction_date) cannot bias this test: there is nothing to cluster when
+    the two samples being compared both belong to a single ticker.
+    """
     rows = []
     for t in tickers:
         beta, alpha = np.polyfit(ret[benchmark], ret[t], 1)
@@ -107,7 +115,30 @@ def earnings_day_test(ret, events, tickers, benchmark):
 
 
 def regress_car(events, xcol, tickers, core):
-    """CAR[0,+1] on `xcol` for all events, peers only, core only, and each stock."""
+    """CAR[0,+1] on `xcol` for all events, peers only, core only, and each stock.
+
+    Standard errors correct for the fact that several of these stocks
+    sometimes react to earnings on the same calendar day (e.g. FIS and GPN),
+    so their abnormal returns on those days share a common shock the market
+    model does not remove. Pooling them as if independent (the classical OLS
+    assumption `scipy.stats.linregress` makes) overstates the effective
+    sample size and understates standard errors on every group that spans
+    more than one ticker.
+
+    A group can only be clustered on `reaction_date` if some date is shared
+    by more than one of its own events ("all" and "peers only" qualify here;
+    FIS/GPN alone account for two of the 13 shared dates in this sample).
+    When every event in a group has its own unique reaction_date -- true for
+    every single-ticker group (one company reports once a quarter) and, in
+    this sample, for "core only" (V and MA never react on the same day) --
+    cluster-robust and HC1 heteroskedasticity-robust standard errors are the
+    same computation: each cluster has exactly one observation. HC1 is known
+    to be anti-conservative (understates the true SE) at small n, so those
+    groups use HC3 instead, which inflates the small-sample correction and
+    does not pretend to be a clustering fix it structurally cannot be.
+    Either way this never changes the slope or R2 (OLS point estimates,
+    unaffected by how the covariance is estimated), only the SE and p-value.
+    """
     groups = [("all", events),
               ("peers only", events[~events.ticker.isin(core)]),
               ("core only", events[events.ticker.isin(core)])]
@@ -116,10 +147,20 @@ def regress_car(events, xcol, tickers, core):
     for label, d in groups:
         if len(d) < 5:
             continue
-        res = stats.linregress(d[xcol], d["car_0_1"])
+        x = sm.add_constant(d[xcol].to_numpy())
+        y = d["car_0_1"].to_numpy()
+        n_clusters = d["reaction_date"].nunique()
+        if n_clusters < len(d):
+            method = "cluster"
+            fit = sm.OLS(y, x).fit(
+                cov_type="cluster", cov_kwds={"groups": d["reaction_date"].to_numpy()})
+        else:
+            method = "HC3"
+            fit = sm.OLS(y, x).fit(cov_type="HC3")
         rho, p_rho = stats.spearmanr(d[xcol], d["car_0_1"])
-        rows.append({"group": label, "n": len(d), "slope": res.slope,
-                     "R2": res.rvalue ** 2, "p": res.pvalue,
+        rows.append({"group": label, "n": len(d), "clusters": n_clusters, "method": method,
+                     "slope": fit.params[1], "R2": fit.rsquared,
+                     "se": fit.bse[1], "p": fit.pvalues[1],
                      "spearman rho": rho, "rho p": p_rho})
     return pd.DataFrame(rows).set_index("group")
 
